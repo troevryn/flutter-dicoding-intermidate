@@ -16,7 +16,13 @@ class UploadProvider extends ChangeNotifier {
   ErrorResponse? uploadResponse;
   String description = "";
   bool error = false;
-
+  double? _lat = -6.8957473;
+  double? _log = 107.6337669;
+void addLatLog(lat,log){
+  _lat=lat;
+  _log=log;
+  notifyListeners();
+}
   /// todo-03-upload-05: create a function to handle upload
   Future<void> upload(
     List<int> bytes,
@@ -29,7 +35,7 @@ class UploadProvider extends ChangeNotifier {
       isUploading = true;
       notifyListeners();
 
-      uploadResponse = await apiService.postStory(bytes, fileName, description);
+      uploadResponse = await apiService.postStory(bytes, fileName, description,_lat,_log);
       message = uploadResponse?.message ?? "success";
       isUploading = false;
 

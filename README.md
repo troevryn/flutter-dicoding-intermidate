@@ -18,3 +18,5 @@ samples, guidance on mobile development, and a full API reference.
 
 dart format lib
 dart analyze
+flutter run -flavor paid -t lib/main_paid.dart
+flutter run -flavor free -t lib/free.dart

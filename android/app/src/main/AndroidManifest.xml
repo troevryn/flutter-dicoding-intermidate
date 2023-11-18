@@ -1,9 +1,15 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <application
         android:label="declarative_route"
         android:name="${applicationName}"
+         tools:overrideLibrary="io.flutter.plugins.googlemaps"
         android:icon="@mipmap/ic_launcher">
+           <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDyjSR4urPnZd6Lv3P3RfPbJyBvTZQpBfc" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -30,5 +36,6 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+            
     </application>
 </manifest>

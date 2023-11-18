@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 class CardStory extends StatelessWidget {
   final ListStory story;
   final Function onTap;
-
-  const CardStory({Key? key, required this.story, required this.onTap})
-      : super(key: key);
+  const CardStory({
+    Key? key,
+    required this.story,
+    required this.onTap,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Material(
-        // color: primaryColor,
-        child: Card(
+    return Card(
       child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListTile(
@@ -56,6 +56,6 @@ class CardStory extends StatelessWidget {
             ]),
             onTap: () => onTap(),
           )),
-    ));
+    );
   }
 }

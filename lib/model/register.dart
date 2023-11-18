@@ -1,11 +1,8 @@
 import 'dart:convert';
 
-RegisterResponse registerResponseFromJson(String str) =>
-    RegisterResponse.fromJson(json.decode(str));
-
-String registerResponseToJson(RegisterResponse data) =>
-    json.encode(data.toJson());
-
+import 'package:json_annotation/json_annotation.dart';
+part 'register.g.dart';
+@JsonSerializable()
 class RegisterResponse {
   bool error;
   String message;
@@ -15,24 +12,13 @@ class RegisterResponse {
     required this.message,
   });
 
-  factory RegisterResponse.fromJson(Map<String, dynamic> json) =>
-      RegisterResponse(
-        error: json["error"],
-        message: json["message"],
-      );
+  factory RegisterResponse.fromJson(Map<String, dynamic> json) =>_$RegisterResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "error": error,
-        "message": message,
-      };
+  Map<String, dynamic> toJson() => _$RegisterResponseToJson(this);
 }
 
-RegisterRequest registerRequestFromJson(String str) =>
-    RegisterRequest.fromJson(json.decode(str));
 
-String registerRequestToJson(RegisterRequest data) =>
-    json.encode(data.toJson());
-
+@JsonSerializable()
 class RegisterRequest {
   String name;
   String email;
@@ -44,16 +30,20 @@ class RegisterRequest {
     required this.password,
   });
 
-  factory RegisterRequest.fromJson(Map<String, dynamic> json) =>
-      RegisterRequest(
-        name: json["name"],
-        email: json["email"],
-        password: json["password"],
-      );
+  factory RegisterRequest.fromJson(Map<String, dynamic> json) =>_$RegisterRequestFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "name": name,
-        "email": email,
-        "password": password,
-      };
+  Map<String, dynamic> toJson() => _$RegisterRequestToJson(this);
 }
+
+RegisterRequest registerRequestFromJson(String str) =>
+    RegisterRequest.fromJson(json.decode(str));
+
+String registerRequestToJson(RegisterRequest data) =>
+    json.encode(data.toJson());
+
+
+RegisterResponse registerResponseFromJson(String str) =>
+    RegisterResponse.fromJson(json.decode(str));
+
+String registerResponseToJson(RegisterResponse data) =>
+    json.encode(data.toJson());

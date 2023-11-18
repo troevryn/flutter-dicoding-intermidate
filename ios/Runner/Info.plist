@@ -7,6 +7,16 @@
     <string>id</string>
     <string>en</string>
   </array>
+  <key>UIBackgroundModes</key>
+<array>
+        <string>location</string>
+</array>
+  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>The app needs user's location permission</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>The app needs user's location permission</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>The app needs location service permission</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

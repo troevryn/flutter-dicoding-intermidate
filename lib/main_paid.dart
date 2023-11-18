@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 
 void main() {
    FlavorConfig(
-    flavor: FlavorType.free,
+    flavor: FlavorType.paid,
     color: Colors.blue,
     values: const FlavorValues(
-      titleApp: "Free Mode",
+      titleApp: "Paid Mode",
     ),
   );
   runApp(const QuotesApp());

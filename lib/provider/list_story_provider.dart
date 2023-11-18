@@ -13,6 +13,10 @@ class StoriesProvider extends ChangeNotifier {
   }
   late Stories _stories;
   late ResultState _state;
+  List<ListStory> listStory = [];
+  int pageItems = 1;
+
+  int sizeItems = 10;
   String _message = '';
   bool _refresh = false;
   String get message => _message;
@@ -22,6 +26,7 @@ class StoriesProvider extends ChangeNotifier {
 
   ResultState get state => _state;
   void fetchData() async {
+    listStory=[];
     await _fetchStories();
     notifyListeners();
   }
@@ -29,19 +34,31 @@ class StoriesProvider extends ChangeNotifier {
   void setRefesh(bool value) {
     _refresh = value;
   }
+  void incrementPageItems(){
+    pageItems+=1;
+    notifyListeners();
+  }
+
+  Future<void> getStories() async {
+    _fetchStories();
+  }
 
   Future<dynamic> _fetchStories() async {
     try {
-      _state = ResultState.loading;
-      notifyListeners();
-      final stories = await apiService.fetchGetStories();
+      if (pageItems == 1) {
+        _state = ResultState.loading;
+        notifyListeners();
+      }
+      final stories = await apiService.fetchGetStories(pageItems, sizeItems);
       if (stories.listStory.isEmpty) {
         _state = ResultState.noData;
         notifyListeners();
         return _message = 'Empty Data';
       } else {
         _state = ResultState.hasData;
+        listStory.addAll(stories.listStory);
         notifyListeners();
+
         return _stories = stories;
       }
     } on SocketException {

@@ -8,7 +8,7 @@ import 'package:declarative_route/widget/platform_widget.dart';
 import 'package:declarative_route/common.dart';
 import 'package:flutter/cupertino.dart';
 
-class QuotesListScreen extends StatelessWidget {
+class QuotesListScreen extends StatefulWidget {
   final Function(String) onTapped;
   final Function toFormScreen;
   final Function onLogout;
@@ -20,46 +20,84 @@ class QuotesListScreen extends StatelessWidget {
     required this.onLogout,
   }) : super(key: key);
 
+  @override
+  State<QuotesListScreen> createState() => _QuotesListScreenState();
+}
+
+class _QuotesListScreenState extends State<QuotesListScreen> {
+  final ScrollController scrollController = ScrollController();
+  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+  @override
+  void initState() {
+    super.initState();
+    final storiesProvider = context.read<StoriesProvider>();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent) {
+        storiesProvider.incrementPageItems();
+        storiesProvider.getStories();
+      }
+    });
+
+    // Future.microtask(() async => storiesProvider.getStories());
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   Widget _buildList() {
-    return Consumer<StoriesProvider>(builder: (context, state, _) {
-      if (state.state == ResultState.loading) {
-        return const Center(
-            child: CircularProgressIndicator(color: Colors.black));
-      } else if (state.state == ResultState.hasData) {
-        return ListView.builder(
+    return Consumer<StoriesProvider>(
+      builder: (context, state, _) {
+        if (state.state == ResultState.loading && state.pageItems == 1) {
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.black),
+          );
+        } else if (state.state == ResultState.hasData) {
+          final stories = state.listStory;
+
+          return ListView.builder(
+            controller: scrollController,
             shrinkWrap: true,
-            itemCount: state.result.listStory.length,
+            itemCount: stories.length + (state.pageItems != 1 ? 1 : 0),
             itemBuilder: (context, index) {
-              var story = state.result.listStory[index];
+              if (index == stories.length && state.pageItems != 1) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              var story = stories[index];
 
               return CardStory(
                 story: story,
                 onTap: () {
                   // state.setRefesh(true);
-                  onTapped(story.id);
+                  widget.onTapped(story.id);
                 },
               );
             });
-      } else if (state.state == ResultState.noData) {
-        return Center(
-          child: Material(
-            child: Text(state.message),
-          ),
-        );
-      } else if (state.state == ResultState.error) {
-        return Center(
-          child: Material(
-            child: Text(state.message),
-          ),
-        );
-      } else {
-        return const Center(
-          child: Material(
-            child: Text(''),
-          ),
-        );
-      }
-    });
+        } else if (state.state == ResultState.noData ||
+            state.state == ResultState.error) {
+          return Center(
+            child: Material(
+              child: Text(state.message),
+            ),
+          );
+        } else {
+          return const Center(
+            child: Material(
+              child: Text(''),
+            ),
+          );
+        }
+      },
+    );
   }
 
   Widget _buildAndroid(BuildContext context) {
@@ -76,11 +114,11 @@ class QuotesListScreen extends StatelessWidget {
             onPressed: () async {
               final authRead = context.read<AuthProvider>();
               final result = await authRead.logout();
-              if (result) onLogout();
+              if (result) widget.onLogout();
             },
             icon: authWatch.isLoadingLogout
                 ? const CircularProgressIndicator(
-                    color: Colors.white,
+                    
                   )
                 : const Icon(Icons.logout),
           ),
@@ -89,7 +127,7 @@ class QuotesListScreen extends StatelessWidget {
       body: _buildList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          toFormScreen();
+          widget.toFormScreen();
         },
         tooltip: "add",
         child: const Icon(Icons.add),
@@ -113,7 +151,7 @@ class QuotesListScreen extends StatelessWidget {
               onPressed: () async {
                 final authRead = context.read<AuthProvider>();
                 final result = await authRead.logout();
-                if (result) onLogout();
+                if (result) widget.onLogout();
               },
               child: authWatch.isLoadingLogout
                   ? const CupertinoActivityIndicator()

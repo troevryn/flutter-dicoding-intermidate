@@ -1,6 +1,7 @@
 import 'package:declarative_route/model/login.dart';
 import 'package:declarative_route/provider/auth_provider.dart';
 import 'package:declarative_route/widget/Snackbar.dart';
+import 'package:declarative_route/widget/logo_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,6 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const LogoAnimation(),
                 TextFormField(
                   controller: emailController,
                   validator: (value) {

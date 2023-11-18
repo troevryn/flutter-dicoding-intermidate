@@ -1,13 +1,8 @@
-// To parse this JSON data, do
-//
-//     final errorResponse = errorResponseFromJson(jsonString);
-
+import 'package:json_annotation/json_annotation.dart';
 import 'dart:convert';
 
-ErrorResponse errorResponseFromJson(String str) =>
-    ErrorResponse.fromJson(json.decode(str));
-
-String errorResponseToJson(ErrorResponse data) => json.encode(data.toJson());
+part 'error.g.dart';
+@JsonSerializable()
 
 class ErrorResponse {
   bool error;
@@ -18,13 +13,10 @@ class ErrorResponse {
     required this.message,
   });
 
-  factory ErrorResponse.fromJson(Map<String, dynamic> json) => ErrorResponse(
-        error: json["error"],
-        message: json["message"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "error": error,
-        "message": message,
-      };
+  factory ErrorResponse.fromJson(Map<String, dynamic> json) => _$ErrorResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$ErrorResponseToJson(this);
 }
+ErrorResponse errorResponseFromJson(String str) =>
+    ErrorResponse.fromJson(json.decode(str));
+
+String errorResponseToJson(ErrorResponse data) => json.encode(data.toJson());

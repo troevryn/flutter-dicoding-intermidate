@@ -13,7 +13,6 @@ class FlagIconWidget extends StatelessWidget {
       child: DropdownButton(
         icon: const Icon(
           Icons.flag,
-          color: Colors.white,
         ),
         items: AppLocalizations.supportedLocales.map((Locale locale) {
           final flag = Localization.getFlag(locale.languageCode);

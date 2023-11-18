@@ -3,6 +3,7 @@
 import 'dart:convert' show json, jsonEncode;
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:declarative_route/common/flavor_config.dart';
 import 'package:declarative_route/db/AuthRepository.dart';
 import 'package:declarative_route/model/error.dart';
 import 'package:declarative_route/model/login.dart';
@@ -46,9 +47,10 @@ class ApiService {
     }
   }
 
-  Future<Stories> fetchGetStories() async {
+  Future<Stories> fetchGetStories([int page = 1, int size = 10]) async {
     final token = await AuthRepository().getToken();
-    final response = await http.get(Uri.parse("${_baseUrl}stories"),
+    final response = await http.get(
+        Uri.parse("${_baseUrl}stories?page=$page&size=$size"),
         headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
     if (response.statusCode == 200) {
       return Stories.fromJson(json.decode(response.body));
@@ -70,8 +72,8 @@ class ApiService {
     }
   }
 
-  Future<ErrorResponse> postStory(
-      List<int> bytes, String fileName, String description) async {
+  Future<ErrorResponse> postStory(List<int> bytes, String fileName,
+      String description, double? lat, double? log) async {
     final token = await AuthRepository().getToken();
     var request =
         http.MultipartRequest('POST', Uri.parse("${_baseUrl}stories"));
@@ -81,9 +83,17 @@ class ApiService {
       bytes,
       filename: fileName,
     );
-    final Map<String, String> fields = {
+    Map<String, String> fields = {
       "description": description,
     };
+    if (FlavorConfig.instance.flavor != FlavorType.free) {
+      fields = {
+        "description": description,
+        "lat": lat.toString(),
+        "lon": log.toString(),
+      };
+    }
+
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",
       HttpHeaders.authorizationHeader: "Bearer $token"
